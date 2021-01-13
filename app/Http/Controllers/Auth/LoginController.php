@@ -59,7 +59,12 @@ class LoginController extends Controller
             }else{
                 return redirect('/admin/login')->with('error','Invalid User ID or Password');
             }
-        }
-        return view('auth.login-admin');
+        } else {
+            if (Auth::user()) {
+                return \redirect('/home');
+            } else {
+                return view('auth.login-admin');
+            }
+        }        
     }
 }

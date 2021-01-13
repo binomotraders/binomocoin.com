@@ -75,9 +75,11 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($users as $item)
-                                            <td>{{ $item->name }}</td>
-                                            <td>{{ $item->email }}</td>
-                                            <td>{{ $item->total_coins }}</td>
+                                            <tr>
+                                                <td>{{ $item->name }}</td>
+                                                <td>{{ $item->email }}</td>
+                                                <td>{{ $item->total_coins }}</td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
