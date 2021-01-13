@@ -23,7 +23,7 @@
                             <h4>{{ Auth::user()->name }}</h4>
                             <h5>{{ Auth::user()->email }}</h5>
                             <h6>Wallet Address: <span class="text-warning">{{ Auth::user()->uuid }}</span></h6>
-                            <h6 class="mt-4">Registered Date: {{ Auth::user()->created_at }}</h6>
+                            <h6 class="mt-4">Registered Date: {{ date('d M Y - H:i:s', strtotime(Auth::user()->created_at)) }}</h6>
                         </div>
                     </div>
                     

@@ -38,9 +38,12 @@
               </div> <img src="{{ asset('wallet/images/avatar/avatar-1.png') }}" width="20" alt="" />
             </a>
 						<div class="dropdown-menu dropdown-menu-right">
-							<a href="{{ route('profile') }}" class="dropdown-item ai-icon">
-                <i class="flaticon-381-user"></i> <span class="ml-2">Profile </span> 
-              </a>
+              @if (Auth::user()->user_role == "USER")
+                <a href="{{ route('profile') }}" class="dropdown-item ai-icon">
+                  <i class="flaticon-381-user"></i> <span class="ml-2">Profile </span> 
+                </a>
+              @endif
+							
 							<a href="{{ route('change-password') }}" class="dropdown-item ai-icon">
                 <i class="fa fa-unlock-alt" aria-hidden="true"></i> <span class="ml-2">Change Password </span> 
               </a>
@@ -74,35 +77,40 @@
           <span class="nav-text">Dashboard</span>
         </a>
       </li>
-      <li>
-        <a href="{{ route('transfer') }}">
-          <i class="flaticon-381-internet"></i>
-          <span class="nav-text">Transfer</span>
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('withdraw') }}">
-          <i class="flaticon-381-layer-1"></i>
-          <span class="nav-text">Withdraw</span>
-        </a>
-      </li>
-      <li>
-        <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-          <i class="flaticon-381-notepad"></i>
-          <span class="nav-text">Transaction History</span>
-        </a>
-        <ul aria-expanded="false">
-          <li><a href="{{ route('purchase/history') }}">Purchase History</a></li>
-          <li><a href="{{ route('transfer/history') }}">Transfer History</a></li>
-        </ul>
-      </li>
+      @if (Auth::user()->user_role == "USER")
+        <li>
+          <a href="{{ route('transfer') }}">
+            <i class="flaticon-381-internet"></i>
+            <span class="nav-text">Transfer</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('withdraw') }}">
+            <i class="flaticon-381-layer-1"></i>
+            <span class="nav-text">Withdraw</span>
+          </a>
+        </li>
+        <li>
+          <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+            <i class="flaticon-381-notepad"></i>
+            <span class="nav-text">Transaction History</span>
+          </a>
+          <ul aria-expanded="false">
+            <li><a href="{{ route('purchase/history') }}">Purchase History</a></li>
+            <li><a href="{{ route('transfer/history') }}">Transfer History</a></li>
+          </ul>
+        </li>
+      @endif
+      
       <li>
         <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
           <i class="flaticon-381-settings-2"></i>
           <span class="nav-text">Settings</span>
         </a>
         <ul aria-expanded="false">
-          <li><a href="{{ route('profile') }}">Profile</a></li>
+          @if (Auth::user()->user_role == "USER")
+            <li><a href="{{ route('profile') }}">Profile</a></li>
+          @endif          
           <li><a href="{{ route('change-password') }}">Change Password</a></li>
           <li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>
           <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

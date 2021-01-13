@@ -40,4 +40,11 @@ class User extends Authenticatable
     public static function checkExist($condition){
         return User::where($condition)->first();
     }
+
+    public static function allUsersDetails() {
+        $data = User::where('users.user_role', '=', 'USER')
+            ->join('user_wallets', 'users.id', '=', 'user_wallets.users_id')
+            ->select('users.id as UserID', 'users.name', 'users.email', 'user_wallets.total_coins')->get();
+        return $data;
+    }
 }

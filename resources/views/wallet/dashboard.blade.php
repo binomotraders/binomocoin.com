@@ -11,6 +11,10 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xl-12">
+                    <div class="text-center">
+                        <p class="mb-2 text-success fs-18"> • Buy 100 coins get 6 coin Free</p>
+                        <p class="text-success fs-18"> • Buy 50 coins get 3 coin Free</p>
+                    </div>
                     <div class="row">
                         <div class="col-xl-6">
                             <div class="card">

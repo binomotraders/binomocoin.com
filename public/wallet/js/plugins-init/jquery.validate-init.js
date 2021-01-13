@@ -10,6 +10,10 @@ jQuery(".validateFrom").validate({
             digits: true,
             range: [1, 100],
         },
+        password: {
+            required: true,
+            minlength: 8
+        },
     },
     ignore: [],
     errorClass: "invalid-feedback animated fadeInUp",

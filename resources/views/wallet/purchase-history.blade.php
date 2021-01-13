@@ -25,6 +25,7 @@
                                     <thead>
                                         <tr>
                                             <th>Datetime</th>
+                                            <th>Coin</th>
                                             <th>Amount</th>
                                             <th>From</th>
                                         </tr>
@@ -34,9 +35,18 @@
                                             @foreach ($data as $item)
                                                 <tr>
                                                     <td>{{ date('d M Y - H:i:s', strtotime($item->created_at)) }}</td>
-                                                    <td>₹{{ $item->total_price }}</td>
+                                                    <td>{{ $item->purchased_coin }}</td>
+                                                    
+                                                    @if ($item->total_price > 0)
+                                                        <td>₹{{ $item->total_price }}</td>
+                                                    @else
+                                                        <td>FREE</td>
+                                                    @endif
+                                                    
                                                     @if ($item->type == "BNC")
-                                                        <td>Self</td>
+                                                        <td>Binomo</td>
+                                                    @elseif ($item->type == "FREE")
+                                                        <td>Offer</td>
                                                     @else
                                                         <td>Friend</td>
                                                     @endif

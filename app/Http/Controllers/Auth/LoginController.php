@@ -50,4 +50,16 @@ class LoginController extends Controller
         }
         return view('auth.login');
     }
+
+    public function adminLogin(Request $request){
+        if($request->isMethod('post')){
+            $data = $request->input();
+            if(Auth::attempt(['email'=>$data['email'],'password'=>$data['password'],'status'=>1,'user_role'=>'ADMIN'])){
+                return redirect('/home');
+            }else{
+                return redirect('/admin/login')->with('error','Invalid User ID or Password');
+            }
+        }
+        return view('auth.login-admin');
+    }
 }

@@ -12,6 +12,8 @@ use App\Models\UserWallet;
 use App\Models\PaymentReceived;
 use App\Models\PurchaseHistory;
 use Razorpay\Api\Api;
+use Carbon\Carbon;
+use App\User;
 use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
@@ -34,34 +36,55 @@ class HomeController extends Controller
     public function index()
     {
         try {
-            $client = new \GuzzleHttp\Client();
-            $url = "https://api.nomics.com/v1/currencies/ticker?key=c95b5de59923429ddb2bfa2c598d91e9&interval=1d&convert=INR&per-page=10";
-            $response = $client->get($url, ['Content-Type' => 'application/json']); 
-            
-            $userWalletDet = UserWallet::checkExist(['users_id' => Auth::user()->id]);
-            $liveBNCValue = BNCLive::viewBNCLive();
+            if (Auth::user()->user_role == "USER") {
+                $client = new \GuzzleHttp\Client();
+                $url = "https://api.nomics.com/v1/currencies/ticker?key=c95b5de59923429ddb2bfa2c598d91e9&interval=1d&convert=INR&per-page=10";
+                $response = $client->get($url, ['Content-Type' => 'application/json']); 
+                
+                $userWalletDet = UserWallet::checkExist(['users_id' => Auth::user()->id]);
+                $liveBNCValue = BNCLive::viewBNCLive();
 
-            $usertotalAmount = 0;
-            $usertotalBNC = 0;
-            if ($userWalletDet) {
-                $usertotalAmount = $liveBNCValue->inr_value * $userWalletDet->total_coins;
-                $usertotalAmount = round($usertotalAmount, 2);
+                $usertotalAmount = 0;
+                $usertotalBNC = 0;
+                if ($userWalletDet) {
+                    $usertotalAmount = $liveBNCValue->inr_value * $userWalletDet->total_coins;
+                    $usertotalAmount = round($usertotalAmount, 2);
 
-                $usertotalBNC = $userWalletDet->total_coins;
-            }            
+                    $usertotalBNC = $userWalletDet->total_coins;
+                }            
 
-            $data = [
-                "usertotalBNC" => $usertotalBNC,
-                "usertotalAmount" => $usertotalAmount,
-                "bnc_value" => $liveBNCValue->inr_value,
-            ];
-            
-            if ($response->getStatusCode() == 200) {
-                $results = json_decode($response->getBody());
-                return view('wallet.dashboard')->with(['marketdata' => $results, 'data' => $data]);
+                $data = [
+                    "usertotalBNC" => $usertotalBNC,
+                    "usertotalAmount" => $usertotalAmount,
+                    "bnc_value" => $liveBNCValue->inr_value,
+                ];
+                
+                if ($response->getStatusCode() == 200) {
+                    $results = json_decode($response->getBody());
+                    return view('wallet.dashboard')->with(['marketdata' => $results, 'data' => $data]);
+                } else {
+                    return view('wallet.dashboard')->with(['marketdata' => [], 'data' => $data]);
+                }
             } else {
-                return view('wallet.dashboard')->with(['marketdata' => [], 'data' => $data]);
+                $users = User::allUsersDetails();
+
+                $date = Carbon::now()->toDateString();
+                $todaysCollection = PurchaseHistory::amountCollected($date);
+                $totalCollection = PurchaseHistory::amountCollected("NA");
+                
+                $todaysCoinSold = PurchaseHistory::CoinSold($date);
+                $totalCoinSold = PurchaseHistory::CoinSold("NA");
+                
+                return view('admin.dashboard')->with([
+                    'users'=>$users,
+                    'todaysCollection' => $todaysCollection,
+                    'totalCollection' => $totalCollection,
+                    'todaysCoinSold' => $todaysCoinSold,
+                    'totalCoinSold' => $totalCoinSold,
+                ]);
             }
+            
+            
         } catch (\Throwable $th) {
             return abort(404);
         }
@@ -185,15 +208,25 @@ class HomeController extends Controller
      */
     public function addToUserWallet($order_obj){
         $userWalletCheckExist = UserWallet::checkExist(['users_id' => Auth::user()->id]);
+
+        // add offer coin
+        if ($order_obj['purchased_coin'] >= 100) {
+            $offerCoin = 6;
+        } else if ($order_obj['purchased_coin'] >= 50) {
+            $offerCoin = 3;
+        } else {
+            $offerCoin = 0;
+        }
+
         if ($userWalletCheckExist) {
             $data = [
-                'total_coins' => $userWalletCheckExist->total_coins + $order_obj['purchased_coin']
+                'total_coins' => $userWalletCheckExist->total_coins + $order_obj['purchased_coin'] + $offerCoin
             ];
             UserWallet::updateUserWallet($userWalletCheckExist->id, $data);
         } else {
             $data = [
                 'users_id' => Auth::user()->id,
-                'total_coins' => $order_obj['purchased_coin']
+                'total_coins' => $order_obj['purchased_coin'] + $offerCoin
             ];
             UserWallet::addUserWallet($data);
         }
@@ -216,6 +249,41 @@ class HomeController extends Controller
             'total_price' => $order_obj['total_price']
         ];
         PurchaseHistory::addPurchaseHistory($data);
+
+        // add offer coin
+        if ($order_obj['purchased_coin'] >= 50) {
+            $this->addOfferToPurchaseHistory($paymentReceivedId, $order_obj);
+        }
+
+        return;
+    }
+
+    /**
+     * offer add to purchase table
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function addOfferToPurchaseHistory($paymentReceivedId, $order_obj){
+        if ($order_obj['purchased_coin'] >= 100) {
+            $offerCoin = 6;
+        } else if ($order_obj['purchased_coin'] >= 50) {
+            $offerCoin = 3;
+        } else {
+            $offerCoin = 0;
+        }
+
+        if ($offerCoin > 0) {
+            $data = [
+                'users_id' => Auth::user()->id,
+                'payment_receiveds_id' => $paymentReceivedId,
+                'type' => 'FREE',
+                'purchased_by' => '0',
+                'purchased_coin' => $offerCoin,
+                'price_per_coin' => $order_obj['price_per_coin'],
+                'total_price' => 0
+            ];
+            PurchaseHistory::addPurchaseHistory($data);
+        } 
         return;
     }
 

@@ -68,7 +68,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="mb-1"><strong>{{ __('Confirm Password') }}</strong></label>
-                                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                                                <input id="password-confirm" type="text" class="form-control" name="password_confirmation" required autocomplete="new-password">
                                             </div>
                                             <div class="text-center">
                                                 <button type="submit" class="btn btn-primary btn-block">Sign Me Up</button>
