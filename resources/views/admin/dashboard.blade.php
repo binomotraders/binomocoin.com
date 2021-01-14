@@ -24,7 +24,7 @@
                             <div class="widget-stat card">
                                 <div class="card-body p-4">
                                     <h4 class="card-title text-warning">Todys Collection</h4>
-                                    <h3>{{ $todaysCollection }}</h3>
+                                    <h3>{{ round($todaysCollection, 2) }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -32,7 +32,7 @@
                             <div class="widget-stat card">
                                 <div class="card-body p-4">
                                     <h4 class="card-title text-danger">Total Collection</h4>
-                                    <h3>{{ $totalCollection }}</h3>
+                                    <h3>{{ round($totalCollection, 2) }}</h3>
                                 </div>
                             </div>
                         </div>
