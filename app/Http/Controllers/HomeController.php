@@ -11,6 +11,7 @@ use App\Models\BNCHistory;
 use App\Models\UserWallet;
 use App\Models\PaymentReceived;
 use App\Models\PurchaseHistory;
+use App\Models\OrderHistory;
 use Razorpay\Api\Api;
 use Carbon\Carbon;
 use App\User;
@@ -126,7 +127,16 @@ class HomeController extends Controller
                 'razorpay_signature' => '',
                 'status' => 0
             ];
-            PaymentReceived::addPaymentReceived($saveOrderObj);
+            $paymentRecID = PaymentReceived::addPaymentReceived($saveOrderObj);
+
+            // Insert order details to order history
+            $orderHistoryObj = [
+                'payment_receiveds_id' => $paymentRecID,
+                'purchased_coin' => $id,
+                'price_per_coin' => $data->inr_value,
+                'total_price' => $payAmount
+            ];
+            OrderHistory::addOrderHistory($orderHistoryObj);
 
             return response()->json(['status'=>'success', 'payAmount'=>$payAmount, 'order'=>$orderOj], 200);
         } catch (\Throwable $th) {

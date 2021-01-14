@@ -23,7 +23,8 @@ class PaymentReceived extends Model
     ];
 
     public static function addPaymentReceived($data) {
-        self::create($data);
+        $result = self::create($data);
+        return $result->id;
     }
 
     /* Update the PaymentReceived based on Id

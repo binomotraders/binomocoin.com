@@ -77,6 +77,15 @@
           <span class="nav-text">Dashboard</span>
         </a>
       </li>
+      @if (Auth::user()->user_role == "ADMIN")
+        <li>
+          <a href="{{ route('admin/check-payment') }}">
+            <i class="flaticon-381-networking"></i>
+            <span class="nav-text">Send Pending Coin</span>
+          </a>
+        </li>
+      @endif
+
       @if (Auth::user()->user_role == "USER")
         <li>
           <a href="{{ route('transfer') }}">

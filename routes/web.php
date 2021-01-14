@@ -51,6 +51,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/profile','HomeController@viewProfile')->name('profile');
     }); 
     
-    // Route::group(['middleware' => ['auth', 'adminauth']], function() {});
+    Route::group(['middleware' => ['auth', 'adminauth']], function() {
+        Route::get('admin/check-payment', 'TransactionController@viewCheckPayment')->name('admin/check-payment');  
+        Route::post('admin/check-payment', 'TransactionController@validatePaymentID')->name('admin/check-payment'); 
+    });
 });
 
