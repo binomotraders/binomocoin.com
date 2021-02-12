@@ -11,10 +11,10 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xl-12">
-                    <div class="text-center">
+                    {{-- <div class="text-center">
                         <p class="mb-2 text-success fs-18"> • Buy 100 coins get 6 coin Free</p>
                         <p class="text-success fs-18"> • Buy 50 coins get 3 coin Free</p>
-                    </div>
+                    </div> --}}
                     <div class="row">
                         <div class="col-xl-6">
                             <div class="card">
@@ -92,7 +92,7 @@
                                         </h3>
                                     </div>
                                 </div>
-                                <div class="card-footer border-0 pt-0">
+                                {{-- <div class="card-footer border-0 pt-0">
                                     <div class="row align-items-center">
                                         <div class="col-12">
                                             <a href="javascript:void(0);" class="btn btn-success btn-sm d-block rounded-0 mt-3 mt-md-0 fs-20" data-toggle="modal" data-target="#buyBNCModalFirst" data-backdrop="static" data-keyboard="false">
@@ -100,7 +100,7 @@
                                             </a>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -173,7 +173,7 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="buyBNCModalFirst">
+    {{-- <div class="modal fade" id="buyBNCModalFirst">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -197,7 +197,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <div class="modal fade" id="buyBNCModalSecond">
         <div class="modal-dialog modal-dialog-centered" role="document">
